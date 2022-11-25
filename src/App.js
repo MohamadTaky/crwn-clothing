@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import HomePage from "./homepage.compoent";
+import HomePage from "./pages/homepage/homepage.compoent";
 
 export default class App extends React.Component {
 	constructor(props) {
