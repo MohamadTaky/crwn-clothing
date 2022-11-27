@@ -1,13 +1,14 @@
 import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { onAuthStateChanged } from "firebase/auth";
 
 import HomePage from "./pages/homepage/homepage.compoent";
 import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.page";
 import Header from "./components/header/header.component";
+import { onSnapshot } from "firebase/firestore";
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -16,12 +17,26 @@ export default class App extends React.Component {
 			currentUser: null,
 		};
 	}
-	unsubscribeFromAuth = null;
 
+	unsubscribeFromAuth = null;
 	componentDidMount() {
-		this.unsubscribeFromAuth = onAuthStateChanged(auth, user => {
-			this.setState({ currentUser: user });
-			console.log(user);
+		this.unsubscribeFromAuth = onAuthStateChanged(auth, async userAuth => {
+			if (userAuth) {
+				const userRef = await createUserProfileDocument(userAuth);
+				onSnapshot(userRef, snapshot => {
+					this.setState(
+						{
+							currentUser: {
+								id: snapshot.id,
+								...snapshot.data(),
+							},
+						},
+						() => {
+							console.log(this.state);
+						}
+					);
+				});
+			} else this.setState({ currentUser: null });
 		});
 	}
 	componentWillUnmount() {
