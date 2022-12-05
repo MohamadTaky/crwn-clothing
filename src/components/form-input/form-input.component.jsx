@@ -1,14 +1,10 @@
-import "./form-input.styles.scss";
+import { FormInputContainer, InputLabelContainer, InputContainer } from "./form-input.styles";
 
 export default function FormInput({ handleChange, label, ...rest }) {
 	return (
-		<div className="form-input-container">
-			<input className="form-input" onChange={handleChange} {...rest} />
-			{label && (
-				<label className={`${rest.value.length && "shrink"} form-input-label`} htmlFor="">
-					{label}
-				</label>
-			)}
-		</div>
+		<FormInputContainer>
+			<InputContainer onChange={handleChange} {...rest} />
+			{label && <InputLabelContainer shrink={rest.value.length}>{label}</InputLabelContainer>}
+		</FormInputContainer>
 	);
 }
