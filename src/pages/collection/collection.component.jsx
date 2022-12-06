@@ -5,7 +5,9 @@ import { CollectionPageContainer, TitleContainer, ItemsContainer } from "./colle
 
 const CollectionPage = () => {
 	const { collectionId } = useParams();
-	const collection = useSelector(state => state.shop.collections[collectionId]);
+	const collection = useSelector(state =>
+		state.shop.collections ? state.shop.collections[collectionId] : null
+	);
 	const { title, items } = collection;
 
 	return (

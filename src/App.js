@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument, addCollectionAndItems } from "./firebase/firebase.utils";
 import { onAuthStateChanged } from "firebase/auth";
 
 import HomePage from "./pages/homepage/homepage.compoent";
@@ -13,13 +13,14 @@ import { onSnapshot } from "firebase/firestore";
 import { setCurrentUser } from "./redux/user/user.actions";
 import { connect } from "react-redux/es/exports";
 import { selectCurrentUser } from "./redux/user/user.selectors";
+import { selectShopCollectionsForPreview } from "./redux/shop/shop.selectors";
 import { createStructuredSelector } from "reselect";
 import CollectionPage from "./pages/collection/collection.component";
 
 class App extends React.Component {
 	unsubscribeFromAuth = null;
 	componentDidMount() {
-		const { setCurrentUser } = this.props;
+		const { setCurrentUser, collectionsArray } = this.props;
 		this.unsubscribeFromAuth = onAuthStateChanged(auth, async userAuth => {
 			if (userAuth) {
 				const userRef = await createUserProfileDocument(userAuth);
@@ -61,6 +62,7 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectCurrentUser,
+	collectionsArray: selectShopCollectionsForPreview,
 });
 const mapDispatchToProps = dispatch => ({
 	setCurrentUser: user => dispatch(setCurrentUser(user)),
