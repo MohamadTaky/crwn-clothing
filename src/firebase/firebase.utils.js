@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, getFirestore, setDoc, writeBatch } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -32,6 +32,19 @@ export const createUserProfileDocument = async (user, additionalData) => {
 	return userRef;
 };
 
+export const getCurrentUser = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = onAuthStateChanged(
+			auth,
+			userAuth => {
+				unsubscribe();
+				resolve(userAuth);
+			},
+			reject
+		);
+	});
+};
+
 export const convertCollectionsSnapshotToMap = collections => {
 	return collections.docs
 		.map(doc => {
@@ -59,9 +72,9 @@ export const addCollectionAndItems = async (collectionKey, objectsToAdd) => {
 	return await batch.commit();
 };
 
-const provider = new GoogleAuthProvider();
+export const googleProvider = new GoogleAuthProvider();
 export const SignInWithGoogle = async () => {
 	try {
-		const resualt = await signInWithPopup(auth, provider);
+		const resualt = await signInWithPopup(auth, googleProvider);
 	} catch (error) {}
 };

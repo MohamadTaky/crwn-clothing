@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function CollectionPreview({ title, items, routeName }) {
 	const navigate = useNavigate();
-	console.log(routeName);
 	return (
 		<CollectionPreviewContainer>
 			<TitleContainer onClick={() => navigate(routeName)}>{title.toUpperCase()}</TitleContainer>
